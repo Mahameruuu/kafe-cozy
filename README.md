@@ -50,6 +50,12 @@ Urutan bahan tidak berpengaruh.
 node tools/simulate.js 10
 ```
 
+Opsi tambahan: `--mode=baseline|adaptive|both`, `--skenario=S1,S2,...`, dan `--out=folder`. Contoh uji baseline saja:
+
+```bash
+node tools/simulate.js 5 --mode=baseline --skenario=S1,S2,S3 --out=results/baseline
+```
+
 Menjalankan pemain bot (pemula, menengah, ahli, dan pemula→ahli) pada kedua versi dengan seed 1–10.
 Hasil tersimpan di folder `results/`:
 

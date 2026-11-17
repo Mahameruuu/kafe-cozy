@@ -2,8 +2,11 @@
 // Simulasi pemain bot untuk menguji versi Baseline dan Adaptif
 // dengan skenario dan seed yang sama.
 //
-// Pemakaian:  node tools/simulate.js [jumlah_seed]   (default 10)
-// Hasil CSV tersimpan di folder results/.
+// Pemakaian:
+//   node tools/simulate.js [jumlah_seed] [--mode=baseline|adaptive|both]
+//                          [--skenario=S1,S2,...] [--out=folder]
+// Default: 10 seed, kedua mode, semua skenario, folder results/.
+// Contoh uji baseline saja: node tools/simulate.js 5 --mode=baseline --skenario=S1,S2,S3 --out=results/baseline
 
 const fs = require('fs');
 const path = require('path');
@@ -93,13 +96,19 @@ function stats(values) {
   return { m, sd };
 }
 
-const nSeeds = parseInt(process.argv[2], 10) || 10;
-const outDir = path.join(__dirname, '..', 'results');
+const args = process.argv.slice(2);
+const opt = (name) => (args.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1];
+const nSeeds = parseInt(args.find((a) => /^\d+$/.test(a)), 10) || 10;
+const MODES = !opt('mode') || opt('mode') === 'both' ? ['baseline', 'adaptive'] : [opt('mode')];
+const SCENARIO_KEYS = opt('skenario')
+  ? Object.keys(SCENARIOS).filter((k) => opt('skenario').split(',').some((p) => k.startsWith(p + '_')))
+  : Object.keys(SCENARIOS);
+const outDir = path.resolve(opt('out') || path.join(__dirname, '..', 'results'));
 fs.mkdirSync(outDir, { recursive: true });
 
 const runs = [];
-for (const scenario of Object.keys(SCENARIOS)) {
-  for (const mode of ['baseline', 'adaptive']) {
+for (const scenario of SCENARIO_KEYS) {
+  for (const mode of MODES) {
     for (let seed = 1; seed <= nSeeds; seed++) {
       const game = runOnce(scenario, mode, seed);
       runs.push({ skenario: scenario, ...game.summary });
@@ -132,10 +141,10 @@ const METRICS = [
 ];
 
 const agg = [];
-for (const scenario of Object.keys(SCENARIOS)) {
+for (const scenario of SCENARIO_KEYS) {
   for (const metric of METRICS) {
     const row = { skenario: scenario, metrik: metric };
-    for (const mode of ['baseline', 'adaptive']) {
+    for (const mode of MODES) {
       const vals = runs.filter((r) => r.skenario === scenario && r.mode === mode).map((r) => r[metric]);
       const { m, sd } = stats(vals);
       row[`${mode}_rata`] = +m.toFixed(3);
@@ -146,14 +155,15 @@ for (const scenario of Object.keys(SCENARIOS)) {
 }
 fs.writeFileSync(path.join(outDir, 'sim_agregat.csv'), CC.toCSV(agg));
 
-console.log(`Simulasi selesai: ${runs.length} run (${nSeeds} seed x ${Object.keys(SCENARIOS).length} skenario x 2 mode)\n`);
-for (const scenario of Object.keys(SCENARIOS)) {
+console.log(
+  `Simulasi selesai: ${runs.length} run (${nSeeds} seed x ${SCENARIO_KEYS.length} skenario x ${MODES.length} mode)\n`
+);
+const fmt = (m, sd) => `${m.toFixed(2)} ± ${sd.toFixed(2)}`.padEnd(18);
+for (const scenario of SCENARIO_KEYS) {
   console.log(`== ${scenario}`);
-  for (const r of agg.filter((a) => a.skenario === scenario)) {
-    const fmt = (m, sd) => `${m.toFixed(2)} ± ${sd.toFixed(2)}`.padEnd(18);
-    console.log(
-      `  ${r.metrik.padEnd(28)} baseline ${fmt(r.baseline_rata, r.baseline_sd)} adaptif ${fmt(r.adaptive_rata, r.adaptive_sd)}`
-    );
+  for (const r of agg.filter((x) => x.skenario === scenario)) {
+    const cols = MODES.map((mode) => `${mode} ${fmt(r[`${mode}_rata`], r[`${mode}_sd`])}`).join(' ');
+    console.log(`  ${r.metrik.padEnd(28)} ${cols}`);
   }
 }
 console.log(`\nFile CSV tersimpan di ${outDir}`);
