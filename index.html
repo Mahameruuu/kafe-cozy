@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cozy Cafe</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="wrap">
+      <canvas id="game" width="960" height="600"></canvas>
+
+      <div id="menu" class="overlay">
+        <h1>Cozy Cafe</h1>
+        <p class="sub">Racik minuman dan layani pelanggan sebelum kesabaran mereka habis.</p>
+
+        <div class="form">
+          <label>ID Penguji <input id="playerId" value="P01" maxlength="20" /></label>
+          <label>Seed <input id="seed" type="number" value="2026" /></label>
+          <label>Durasi (detik) <input id="duration" type="number" value="180" min="30" max="900" /></label>
+        </div>
+
+        <div class="buttons">
+          <button data-mode="baseline">Mode Baseline</button>
+          <button data-mode="adaptive">Mode Adaptif</button>
+        </div>
+
+        <div class="help">
+          <b>Kontrol</b><br />
+          <kbd>1</kbd> Espresso &nbsp; <kbd>2</kbd> Susu &nbsp; <kbd>3</kbd> Cokelat &nbsp; <kbd>4</kbd> Matcha<br />
+          <kbd>Spasi</kbd> sajikan ke pelanggan terdepan &nbsp; <kbd>X</kbd> buang isi gelas<br />
+          <kbd>P</kbd> jeda &nbsp; <kbd>D</kbd> panel debug &nbsp; <kbd>Esc</kbd> akhiri sesi
+        </div>
+
+        <div class="history">
+          <span id="historyInfo"></span>
+          <button id="dlHistory" class="small">Unduh riwayat sesi (CSV)</button>
+          <button id="clearHistory" class="small ghost">Hapus riwayat</button>
+        </div>
+      </div>
+
+      <div id="result" class="overlay hidden">
+        <h2>Hasil Sesi</h2>
+        <table id="resultTable"></table>
+        <div class="buttons">
+          <button id="dlSummary" class="small">Ringkasan (CSV)</button>
+          <button id="dlTimeline" class="small">Timeline (CSV)</button>
+          <button id="dlAdapt" class="small">Log adaptasi (CSV)</button>
+          <button id="backMenu">Kembali ke menu</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/rng.js"></script>
+    <script src="js/fuzzy.js"></script>
+    <script src="js/difficulty.js"></script>
+    <script src="js/metrics.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
