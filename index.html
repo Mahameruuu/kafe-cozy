@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cozy Cafe</title>
+<style>
+  body { margin: 0; font-family: sans-serif; background: #3e2f26; color: #4e342e;
+         display: flex; justify-content: center; padding: 16px; }
+  #wrap { position: relative; width: 960px; max-width: 100%; }
+  canvas { width: 100%; height: auto; border-radius: 12px; display: block; }
+  .panel { background: #fffaf0; border-radius: 12px; padding: 24px 28px; }
+  h1 { margin-top: 0; }
+  label { display: block; margin: 12px 0 4px; font-weight: bold; }
+  input { padding: 8px; font-size: 16px; width: 240px; }
+  button { margin: 8px 8px 0 0; padding: 10px 16px; font-size: 15px; border: 0; border-radius: 8px;
+           background: #8a5a3b; color: #fff; cursor: pointer; }
+  button:disabled { background: #bcaaa4; cursor: not-allowed; }
+  table { border-collapse: collapse; margin: 12px 0; }
+  th, td { text-align: left; padding: 4px 16px 4px 0; border-bottom: 1px solid #e0d4c4; }
+  small { color: #6d4c41; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="start" class="panel">
+    <h1>Cozy Cafe</h1>
+    <p>Layani pelanggan sebelum kesabaran mereka habis. Sesi berlangsung 180 detik.</p>
+    <label for="tester">ID penguji</label><input id="tester" placeholder="mis. P01">
+    <label for="seed">Seed</label><input id="seed" type="number" min="1">
+    <p><small>Pakai seed yang sama untuk semua versi yang dibandingkan.</small></p>
+    <div id="modes"></div>
+    <p><small>Kontrol: 1-4 tambah bahan, Spasi sajikan, X buang gelas, D panel debug.</small></p>
+  </div>
+  <canvas id="canvas" width="960" height="540" hidden></canvas>
+  <div id="result" class="panel" hidden>
+    <h1>Hasil sesi</h1>
+    <table id="summary"></table>
+    <div id="actions"></div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/rng.js"></script>
+<script src="js/game.js"></script>
+<script src="js/csv.js"></script>
+<script src="js/render.js"></script>
+<!-- Spawner: aktifkan saat berkasnya sudah ada -->
+<!-- <script src="js/baseline-spawner.js"></script>  (Mahameru) -->
+<script src="js/fuzzy-engine.js"></script>
+<script src="js/fuzzy-system.js"></script>
+<script src="js/adaptive-spawner.js"></script>
+<script src="dev/dev-spawner.js"></script>  <!-- hanya pengembangan; hapus sebelum evaluasi -->
+<script src="js/main.js"></script>
+</body>
+</html>
